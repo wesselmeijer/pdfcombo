@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self';" />
+  <title>About PDF Combo</title>
+  <link rel="stylesheet" href="./tokens.css" />
+  <link rel="stylesheet" href="./about.css" />
+  <script src="./theme.js"></script>
+</head>
+<body>
+  <main class="about">
+    <svg class="about-badge" viewBox="0 0 32 32" role="img" aria-label="PDF Combo">
+      <rect width="32" height="32" rx="7.04" fill="#ea580c"/>
+      <g transform="translate(16 16) scale(1.04) rotate(12) translate(-12 -12)" stroke-linejoin="round">
+        <rect x="9.5" y="2" width="9.5" height="14" rx="1.4"
+              fill="none" stroke="#ffffff" stroke-width="2.2"/>
+        <rect x="5" y="8" width="9.5" height="14" rx="1.4"
+              fill="#ffffff" stroke="#ea580c" stroke-width="2.6" paint-order="stroke"/>
+      </g>
+    </svg>
+
+    <h1 class="about-name">PDF Combo</h1>
+    <p class="about-version">Version <span id="version">—</span></p>
+    <p class="about-tagline">Combine, reorder and preview PDFs.</p>
+
+    <p class="about-dedication">For Liza.</p>
+
+    <p class="about-copyright">
+      © <span id="year">2026</span> Wessel Meijer ·
+      <a id="site" href="https://wesselmeijer.nl" target="_blank" rel="noreferrer">wesselmeijer.nl</a>
+    </p>
+
+    <p class="about-license">
+      Free for noncommercial use ·
+      <a href="https://github.com/wesselmeijer/pdfcombo/blob/main/LICENSE.md" target="_blank" rel="noreferrer">License</a>
+    </p>
+
+    <p class="about-credits">
+      Built with Electron, pdf.js and pdf-lib.
+      <span id="runtime" class="about-runtime"></span>
+    </p>
+
+    <button id="close" class="about-close" type="button">Close</button>
+  </main>
+
+  <script type="module" src="./about.js"></script>
+</body>
+</html>

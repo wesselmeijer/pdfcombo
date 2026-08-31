@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; worker-src 'self' blob:; connect-src 'self' blob: data:;" />
+  <title>PDF Combo</title>
+  <link rel="stylesheet" href="./tokens.css" />
+  <link rel="stylesheet" href="./styles.css" />
+  <!-- Render-blocking on purpose: sets the theme class before the body paints. -->
+  <script src="./theme.js"></script>
+</head>
+<body>
+  <header class="toolbar">
+    <button id="btn-about" class="brand" type="button" title="About PDF Combo"
+            aria-label="About PDF Combo">
+      <!-- Badge on dark surfaces, flat glyph on light. Swapped in CSS, not JS,
+           so the right one is there on first paint (brand guide). -->
+      <svg class="brand-badge" viewBox="0 0 32 32" role="img" aria-label="PDF Combo">
+        <rect width="32" height="32" rx="7.04" fill="#ea580c"/>
+        <g transform="translate(16 16) scale(1.04) rotate(12) translate(-12 -12)" stroke-linejoin="round">
+          <rect x="9.5" y="2" width="9.5" height="14" rx="1.4"
+                fill="none" stroke="#ffffff" stroke-width="2.2"/>
+          <rect x="5" y="8" width="9.5" height="14" rx="1.4"
+                fill="#ffffff" stroke="#ea580c" stroke-width="2.6" paint-order="stroke"/>
+        </g>
+      </svg>
+      <svg class="brand-mono" viewBox="0 0 24 24" role="img" aria-label="PDF Combo" stroke-linejoin="round">
+        <g transform="translate(12 12) rotate(12) translate(-12 -12)">
+          <rect x="9.5" y="2" width="9.5" height="14" rx="1.4"
+                fill="none" stroke="currentColor" stroke-width="2"/>
+          <rect x="5" y="8" width="9.5" height="14" rx="1.4"
+                fill="currentColor" stroke="var(--logo-gap, #ffffff)" stroke-width="2.4" paint-order="stroke"/>
+        </g>
+      </svg>
+      <span class="brand-name">PDF Combo</span>
+    </button>
+
+    <div class="toolbar-actions">
+      <button id="btn-add" class="btn btn-primary" data-icon="file-plus-2">Add PDFs</button>
+      <button id="btn-save" class="btn btn-accent" data-icon="download" disabled>Save Combined PDF</button>
+
+      <span class="toolbar-divider"></span>
+
+      <button id="btn-rotate-left" class="btn btn-ghost btn-icon" data-icon="rotate-ccw"
+              title="Rotate selected left" aria-label="Rotate selected left" disabled></button>
+      <button id="btn-rotate-right" class="btn btn-ghost btn-icon" data-icon="rotate-cw"
+              title="Rotate selected right" aria-label="Rotate selected right" disabled></button>
+      <button id="btn-delete" class="btn btn-ghost" data-icon="trash-2"
+              title="Delete selected pages (they stay visible, greyed out)" disabled><span class="btn-label">Delete</span></button>
+      <button id="btn-reverse" class="btn btn-ghost" data-icon="arrow-up-down"
+              title="Reverse page order" disabled>Reverse</button>
+      <button id="btn-clear" class="btn btn-ghost" data-icon="eraser"
+              title="Remove everything" disabled>Clear</button>
+
+      <span id="toolbar-divider-2" class="toolbar-divider"></span>
+
+      <label id="zoom" class="zoom">
+        <span class="zoom-label">Size</span>
+        <input id="thumb-size" type="range" min="110" max="320" step="10" value="170"
+               aria-label="Thumbnail size" />
+      </label>
+
+      <button id="btn-theme" class="btn btn-ghost btn-icon" title="Switch theme"
+              aria-label="Switch theme"><span class="btn-label overflow-only"></span></button>
+    </div>
+
+    <!-- Controls move in and out of here as the toolbar runs out of room. -->
+    <div class="toolbar-overflow">
+      <button id="btn-overflow" class="btn btn-ghost btn-icon" data-icon="ellipsis"
+              title="More controls" aria-label="More controls"
+              aria-haspopup="true" aria-expanded="false" hidden></button>
+      <div id="overflow-panel" class="overflow-panel" role="group"
+           aria-label="More controls" hidden></div>
+    </div>
+  </header>
+
+  <main class="layout">
+    <aside class="panel panel-sources">
+      <div class="panel-head">
+        <h2>Documents</h2>
+        <span id="source-count" class="pill">0</span>
+      </div>
+      <ul id="source-list" class="source-list"></ul>
+      <p class="panel-hint">Drop PDF files anywhere in the window to add them.</p>
+    </aside>
+
+    <div class="divider" data-panel="left" role="separator" aria-orientation="vertical"
+         aria-label="Resize the documents panel" tabindex="0" title="Drag to resize · double-click to reset"></div>
+
+    <section class="panel panel-pages">
+      <div class="panel-head">
+        <h2>Combined order</h2>
+        <span id="page-count" class="pill"><span class="pill-count">0</span><span class="pill-unit"> pages</span><span class="pill-extra"></span></span>
+        <span class="panel-head-spacer"></span>
+        <span class="panel-head-hint">Drag pages to reorder · Shift/Ctrl-click to multi-select</span>
+      </div>
+      <div id="grid" class="page-grid" tabindex="0"></div>
+      <div id="empty" class="empty-state">
+        <svg class="empty-mark" viewBox="0 0 24 24" aria-hidden="true" stroke-linejoin="round">
+          <g transform="translate(12 12) rotate(12) translate(-12 -12)">
+            <rect x="9.5" y="2" width="9.5" height="14" rx="1.4"
+                  fill="none" stroke="currentColor" stroke-width="2"/>
+            <rect x="5" y="8" width="9.5" height="14" rx="1.4"
+                  fill="currentColor" stroke="var(--logo-gap, #ffffff)" stroke-width="2.4" paint-order="stroke"/>
+          </g>
+        </svg>
+        <h3>No pages yet</h3>
+        <p>Add PDFs to build your combined document.</p>
+        <button id="btn-add-empty" class="btn btn-primary" data-icon="file-plus-2">Add PDFs</button>
+      </div>
+    </section>
+
+    <div class="divider" data-panel="right" role="separator" aria-orientation="vertical"
+         aria-label="Resize the preview panel" tabindex="0" title="Drag to resize · double-click to reset"></div>
+
+    <aside class="panel panel-preview">
+      <div class="panel-head">
+        <h2>Preview</h2>
+        <span class="panel-head-spacer"></span>
+        <button id="prev-page" class="btn btn-ghost btn-icon" data-icon="chevron-left"
+                title="Previous page" aria-label="Previous page" disabled></button>
+        <button id="next-page" class="btn btn-ghost btn-icon" data-icon="chevron-right"
+                title="Next page" aria-label="Next page" disabled></button>
+      </div>
+      <div id="preview-stage" class="preview-stage">
+        <p class="preview-placeholder">Select a page to preview it here.</p>
+      </div>
+      <div id="preview-meta" class="preview-meta"></div>
+    </aside>
+  </main>
+
+  <footer class="statusbar">
+    <span id="status" class="status-text">Ready</span>
+    <span class="statusbar-spacer"></span>
+    <span id="saved-file" class="saved-file"></span>
+  </footer>
+
+  <div id="dropzone" class="dropzone" hidden>
+    <div class="dropzone-inner">
+      <strong>Drop PDFs to add them</strong>
+      <span>They are appended to the end of the current order.</span>
+    </div>
+  </div>
+
+  <div id="busy" class="busy" hidden>
+    <div class="busy-inner">
+      <div class="spinner"></div>
+      <span id="busy-text">Working…</span>
+    </div>
+  </div>
+
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

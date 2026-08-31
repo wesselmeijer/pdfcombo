@@ -1,0 +1,729 @@
+/* Palette, type and theming live in tokens.css, loaded first. */
+
+* { box-sizing: border-box; }
+
+/* The UA rule for [hidden] is display:none, but any author `display` — .btn's
+   inline-flex, say — outranks it whatever the specificity, leaving the element
+   visible with .hidden === true. Restate it so `hidden` always means hidden. */
+[hidden] { display: none !important; }
+
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  line-height: 1.45;
+  overflow: hidden;
+  user-select: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Lucide, at the stroke width the brand guide specifies. */
+.icon {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 auto;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* ---------- toolbar ---------- */
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex: 0 0 auto;
+  padding: 10px 14px;
+  background: var(--bg-panel);
+  border-bottom: 1px solid var(--line);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  appearance: none;
+  border: 1px solid transparent;
+  background: transparent;
+  font: inherit;
+  padding: 4px 8px 4px 4px;
+  margin-left: -4px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.brand:hover { background: var(--line-soft); border-color: var(--line); }
+.brand:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+.brand-badge,
+.brand-mono {
+  width: 22px;
+  height: 22px;
+  flex: 0 0 auto;
+}
+
+/* Badge on dark surfaces, flat glyph on light — the guide's rule, done in CSS so
+   the correct one is present on first paint. */
+.brand-badge { display: none; }
+.brand-mono { display: block; color: var(--color-combo-600); }
+
+:root.dark .brand-badge { display: block; }
+:root.dark .brand-mono { display: none; }
+
+@media (prefers-color-scheme: dark) {
+  :root:not(.light):not(.dark) .brand-badge { display: block; }
+  :root:not(.light):not(.dark) .brand-mono { display: none; }
+}
+
+.brand-name {
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: -0.01em;
+  color: var(--brand-text);
+}
+
+/* Never wraps: when the row runs out of room, app.js moves the lowest-priority
+   controls into the overflow popover instead of starting a second line. */
+.toolbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1 1 auto;
+  min-width: 0;
+  flex-wrap: nowrap;
+  overflow: hidden;
+}
+
+.toolbar-overflow {
+  position: relative;
+  flex: 0 0 auto;
+}
+
+.overflow-panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 60;
+  min-width: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 6px;
+  padding: 8px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--bg-panel);
+  box-shadow: var(--shadow);
+}
+
+.overflow-panel[hidden] { display: none; }
+
+/* Controls sit in a row in the toolbar and stack in the panel, so they need to
+   drop their toolbar-specific sizing once they move. */
+.overflow-panel .btn {
+  justify-content: flex-start;
+  width: 100%;
+  padding: 7px 11px;
+}
+
+.overflow-panel .zoom {
+  justify-content: space-between;
+  padding: 4px 4px 4px 11px;
+}
+
+.overflow-panel .zoom input { width: 120px; }
+.overflow-panel .toolbar-divider { display: none; }
+
+.toolbar-divider {
+  width: 1px;
+  height: 22px;
+  background: var(--line);
+}
+
+.btn {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--line);
+  background: var(--bg-panel);
+  color: var(--text);
+  border-radius: 8px;
+  padding: 6px 11px;
+  font: inherit;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: background 0.12s ease, border-color 0.12s ease, color 0.12s ease, opacity 0.12s ease;
+  white-space: nowrap;
+}
+
+.btn:hover:not(:disabled) { background: var(--line-soft); border-color: var(--zinc-300); }
+:root.dark .btn:hover:not(:disabled) { border-color: var(--zinc-600); }
+.btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.btn:disabled { opacity: 0.4; cursor: default; box-shadow: none; }
+
+.btn-primary {
+  background: var(--accent-solid);
+  border-color: var(--accent-solid);
+  color: var(--accent-contrast);
+}
+.btn-primary:hover:not(:disabled) {
+  background: var(--accent-solid-hover);
+  border-color: var(--accent-solid-hover);
+}
+
+.btn-accent {
+  background: transparent;
+  border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+  color: var(--accent);
+  box-shadow: none;
+}
+.btn-accent:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  border-color: var(--accent);
+}
+
+.btn-ghost { background: transparent; border-color: transparent; box-shadow: none; }
+.btn-ghost:hover:not(:disabled) { background: var(--line-soft); border-color: var(--line); }
+
+.btn-icon { padding: 6px; }
+
+.zoom { display: flex; align-items: center; gap: 8px; color: var(--text-dim); }
+.zoom-label { font-size: 12px; }
+.zoom input { width: 110px; accent-color: var(--accent-solid); }
+
+/* ---------- layout ---------- */
+
+.layout {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: var(--left-w, 240px) 4px minmax(0, 1fr) 4px var(--right-w, 320px);
+  background: var(--line);
+}
+
+.divider {
+  background: var(--line);
+  cursor: col-resize;
+  position: relative;
+  outline: none;
+}
+
+/* Widen the grab area well past the 4px the divider actually occupies. */
+.divider::after {
+  content: "";
+  position: absolute;
+  inset: 0 -4px;
+}
+
+.divider:hover,
+.divider:focus-visible,
+.divider.is-dragging { background: var(--accent-solid); }
+
+body.is-resizing { cursor: col-resize; }
+body.is-resizing *:not(.divider) { pointer-events: none; }
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  min-width: 0;
+  background: var(--bg-panel);
+}
+
+.panel-pages { background: var(--bg); }
+
+.panel-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 0 0 auto;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--line-soft);
+  container-type: inline-size;
+  container-name: panel-head;
+}
+
+.panel-head h2 {
+  margin: 0;
+  min-width: 0;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+  color: var(--text-faint);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.panel-head-spacer { flex: 1 1 auto; }
+.panel-head-hint { font-size: 11px; color: var(--text-faint); }
+
+.pill {
+  flex: 0 0 auto; /* never squeezed into wrapping — it sheds words instead */
+  background: var(--accent-wash);
+  border-radius: 999px;
+  padding: 2px 9px;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--accent);
+  white-space: nowrap;
+}
+
+/*
+ * As the panel narrows the head sheds content rather than reflowing: first the
+ * drag hint, then the deleted tally, then the word "pages" — leaving the count,
+ * which is the part that has to survive. Without this the pill wrapped to two
+ * lines inside its own rounded background.
+ */
+@container panel-head (max-width: 520px) {
+  .panel-head-hint { display: none; }
+}
+
+@container panel-head (max-width: 260px) {
+  .pill-extra { display: none; }
+}
+
+@container panel-head (max-width: 200px) {
+  .pill-unit { display: none; }
+}
+
+:root.dark .pill { color: var(--color-combo-300); }
+
+/* ---------- sources ---------- */
+
+.source-list {
+  list-style: none;
+  margin: 0;
+  padding: 6px;
+  overflow-y: auto;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.source {
+  display: grid;
+  grid-template-columns: 4px 1fr auto;
+  gap: 8px;
+  align-items: center;
+  padding: 8px 8px 8px 0;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  cursor: pointer;
+}
+
+.source:hover { background: var(--bg-elevated); border-color: var(--line-soft); }
+.source.is-error { opacity: 0.75; }
+
+.source-chip {
+  width: 4px;
+  align-self: stretch;
+  min-height: 30px;
+  border-radius: 999px;
+  background: var(--src-color, var(--accent-solid));
+}
+
+.source-body { min-width: 0; }
+
+.source-name {
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.source-sub { font-size: 11px; color: var(--text-faint); }
+.source.is-error .source-sub { color: var(--danger); }
+
+.source-remove {
+  display: inline-flex;
+  border: none;
+  background: transparent;
+  color: var(--text-faint);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 6px;
+}
+.source-remove:hover { color: var(--danger); background: var(--line-soft); }
+.source-remove .icon { width: 14px; height: 14px; }
+
+.panel-hint {
+  flex: 0 0 auto;
+  margin: 0;
+  padding: 10px 12px;
+  border-top: 1px solid var(--line-soft);
+  font-size: 11px;
+  color: var(--text-faint);
+}
+
+/* ---------- page grid ---------- */
+
+.page-grid {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  align-items: flex-start;
+  gap: 16px;
+  outline: none;
+}
+
+.page-grid[hidden] { display: none; }
+
+.page-card {
+  position: relative;
+  width: var(--thumb-w, 170px);
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  background: var(--bg-panel);
+  padding: 8px 8px 6px;
+  cursor: grab;
+  box-shadow: var(--shadow-sm);
+  transition: border-color 0.12s ease, box-shadow 0.12s ease;
+}
+
+.page-card:hover { border-color: var(--zinc-400); }
+
+.page-card.is-selected {
+  border-color: var(--accent-solid);
+  box-shadow: 0 0 0 1px var(--accent-solid) inset;
+}
+
+.page-card.is-focused { box-shadow: 0 0 0 2px var(--accent-solid); }
+.page-card.is-dragging { opacity: 0.35; }
+
+/* While reordering, an accent bar sits in the gap where the pages would land. */
+.page-card.drop-before::before,
+.page-card.drop-after::after {
+  content: '';
+  position: absolute;
+  top: -2px;
+  bottom: -2px;
+  width: 3px;
+  border-radius: 2px;
+  background: var(--accent-solid);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-solid) 22%, transparent);
+  pointer-events: none;
+}
+
+.page-card.drop-before::before { left: -10px; }
+.page-card.drop-after::after { right: -10px; }
+
+/* Deleted pages stay in place, visibly struck out, until the user restores them. */
+.page-card.is-deleted {
+  border-style: dashed;
+  border-color: color-mix(in srgb, var(--danger) 55%, var(--line));
+  background: color-mix(in srgb, var(--danger) 5%, var(--bg-panel));
+}
+
+.page-card.is-deleted .page-thumb canvas {
+  filter: grayscale(1);
+  opacity: 0.3;
+}
+
+.page-card.is-deleted .page-index,
+.page-card.is-deleted .page-origin {
+  text-decoration: line-through;
+  color: var(--text-faint);
+}
+
+.page-card.is-deleted .page-rotate { display: none; }
+
+.deleted-badge {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) rotate(-12deg);
+  padding: 3px 10px;
+  border: 2px solid var(--danger);
+  border-radius: 5px;
+  color: var(--danger);
+  background: color-mix(in srgb, var(--bg-panel) 84%, transparent);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  pointer-events: none;
+}
+
+.page-card:not(.is-deleted) .deleted-badge { display: none; }
+
+/* A fixed box every page is fitted into, so the grid stays a tidy set of rows
+   whatever mix of portrait, landscape and rotated pages it holds. */
+.page-thumb {
+  position: relative;
+  width: 100%;
+  height: calc((var(--thumb-w, 170px) - 18px) * 1.414);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+}
+
+.page-thumb canvas {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+  background: #fff;
+  border: 1px solid var(--page-edge);
+  box-shadow: var(--shadow);
+}
+
+.page-thumb.is-loading {
+  background: linear-gradient(100deg,
+    var(--line-soft) 30%, var(--bg-elevated) 50%, var(--line-soft) 70%);
+  background-size: 250% 100%;
+  animation: shimmer 1.2s linear infinite;
+}
+
+@keyframes shimmer {
+  from { background-position: 130% 0; }
+  to { background-position: -30% 0; }
+}
+
+.page-thumb.is-failed {
+  background: var(--bg-elevated);
+  color: var(--danger);
+  font-size: 11px;
+  text-align: center;
+  padding: 8px;
+}
+
+.page-foot {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  font-size: 11px;
+  color: var(--text-dim);
+}
+
+.page-index {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.page-origin {
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--text-faint);
+}
+
+.page-origin::before {
+  content: "";
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  margin-right: 5px;
+  background: var(--src-color, var(--accent-solid));
+}
+
+.page-tools {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: flex;
+  gap: 3px;
+  opacity: 0;
+  transition: opacity 0.12s ease;
+}
+
+.page-card:hover .page-tools,
+.page-card.is-deleted .page-tools { opacity: 1; }
+
+.page-tool {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 6px;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  background: color-mix(in srgb, var(--zinc-900) 78%, transparent);
+  color: #fff;
+}
+.page-tool:hover { background: var(--accent-solid); }
+.page-tool.is-danger:hover { background: var(--danger); }
+.page-tool .icon { width: 14px; height: 14px; }
+
+.empty-state {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  color: var(--text-faint);
+  text-align: center;
+}
+.empty-mark {
+  width: 46px;
+  height: 46px;
+  color: var(--zinc-300);
+  --logo-gap: var(--bg);
+}
+:root.dark .empty-mark { color: var(--zinc-700); }
+.empty-state h3 { margin: 10px 0 0; font-size: 15px; font-weight: 600; color: var(--text-dim); }
+.empty-state p { margin: 0 0 12px; }
+.empty-state[hidden] { display: none; }
+
+/* ---------- preview ---------- */
+
+.preview-stage {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px;
+  overflow: auto;
+  background: var(--bg);
+}
+
+.preview-stage canvas {
+  max-width: 100%;
+  max-height: 100%;
+  background: #fff;
+  border: 1px solid var(--page-edge);
+  border-radius: 3px;
+  box-shadow: var(--shadow);
+}
+
+.preview-placeholder {
+  color: var(--text-faint);
+  text-align: center;
+  max-width: 200px;
+}
+
+.preview-meta {
+  flex: 0 0 auto;
+  padding: 10px 12px;
+  border-top: 1px solid var(--line-soft);
+  font-size: 11px;
+  color: var(--text-faint);
+  min-height: 34px;
+  overflow-wrap: anywhere;
+}
+
+.preview-meta.is-deleted { color: var(--danger); }
+
+/* ---------- status bar ---------- */
+
+.statusbar {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 14px;
+  background: var(--bg-panel);
+  border-top: 1px solid var(--line);
+  font-size: 11px;
+  color: var(--text-dim);
+}
+
+.statusbar-spacer { flex: 1 1 auto; }
+.status-text.is-error { color: var(--danger); }
+.status-text.is-ok { color: var(--ok); }
+
+.saved-file {
+  color: var(--accent);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  max-width: 45%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.saved-file:empty { display: none; }
+
+/* ---------- overlays ---------- */
+
+.dropzone, .busy {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+}
+.dropzone[hidden], .busy[hidden] { display: none; }
+
+.dropzone {
+  background: color-mix(in srgb, var(--bg) 78%, transparent);
+  pointer-events: none;
+}
+
+.dropzone-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: center;
+  padding: 34px 54px;
+  border: 2px dashed var(--accent-solid);
+  border-radius: 16px;
+  background: var(--bg-panel);
+  box-shadow: var(--shadow);
+}
+.dropzone-inner strong { font-size: 16px; font-weight: 600; }
+.dropzone-inner span { color: var(--text-dim); }
+
+.busy { background: color-mix(in srgb, var(--bg) 60%, transparent); }
+
+.busy-inner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 22px;
+  border-radius: 12px;
+  background: var(--bg-panel);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+}
+
+.spinner {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid var(--line);
+  border-top-color: var(--accent-solid);
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+::-webkit-scrollbar { width: 11px; height: 11px; }
+::-webkit-scrollbar-thumb {
+  background: var(--zinc-300);
+  border-radius: 999px;
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+:root.dark ::-webkit-scrollbar-thumb { background: var(--zinc-700); background-clip: content-box; }
+::-webkit-scrollbar-thumb:hover { background: var(--zinc-400); background-clip: content-box; }
+
+/* Labels that only make sense once a control is stacked in the overflow panel. */
+.overflow-only { display: none; }
+.overflow-panel .overflow-only { display: inline; }

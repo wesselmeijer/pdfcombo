@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" role="img" aria-label="PDF Combo"
+     stroke-linejoin="round">
+  <!-- Flat variant for light surfaces: the glyph alone in the current text
+       colour, no badge. Mirrors the light-mode nav logo on Where Wes Went.
+       Inline this one in markup rather than loading it through an img tag —
+       currentColor and the halo custom property both need the page's context.
+       The halo takes the surface colour, so set logo-gap wherever the
+       background is not white. -->
+  <g transform="translate(12 12) rotate(12) translate(-12 -12)">
+    <rect x="9.5" y="2" width="9.5" height="14" rx="1.4"
+          fill="none" stroke="currentColor" stroke-width="2"/>
+    <rect x="5" y="8" width="9.5" height="14" rx="1.4"
+          fill="currentColor" stroke="var(--logo-gap, #ffffff)" stroke-width="2.4" paint-order="stroke"/>
+  </g>
+</svg>

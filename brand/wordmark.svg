@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 168 32" role="img" aria-label="PDF Combo">
+  <!-- Badge + name, at the nav's proportions: 20px mark, 6px gap, 18px bold.
+       The name is live text in Inter — the same face the sites load from
+       Google Fonts — so it needs that font present. For placements where it
+       is not (a README on someone else's machine, print), export to outlines
+       or use the PNGs. -->
+  <rect x="0" y="6" width="20" height="20" rx="4.4" fill="#ea580c"/>
+  <g transform="translate(10 16) scale(0.65) rotate(12) translate(-12 -12)" stroke-linejoin="round">
+    <rect x="9.5" y="2" width="9.5" height="14" rx="1.4" fill="none" stroke="#fff" stroke-width="2.2"/>
+    <rect x="5" y="8" width="9.5" height="14" rx="1.4" fill="#fff" stroke="#ea580c" stroke-width="2.6" paint-order="stroke"/>
+  </g>
+  <text x="26" y="22" font-family="Inter, system-ui, sans-serif" font-size="18" font-weight="700" fill="#c2410c">PDF Combo</text>
+</svg>

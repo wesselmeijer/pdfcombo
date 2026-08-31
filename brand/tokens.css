@@ -1,0 +1,32 @@
+/* PDF Combo design tokens.
+   Mirrors travel/frontend/src/index.css so both apps theme the same way: one
+   50-900 accent ramp, zinc neutrals, a light and a dark surface, and a `.dark`
+   class on <html> set before first paint. Only the accent hue differs —
+   swapping this ramp for --color-travel-* turns this file into that one. */
+
+@theme {
+  --color-combo-50: #fff7ed;
+  --color-combo-100: #ffedd5;
+  --color-combo-200: #fed7aa;
+  --color-combo-300: #fdba74;
+  --color-combo-400: #fb923c;
+  --color-combo-500: #f97316;
+  --color-combo-600: #ea580c; /* brand accent — matches <meta name="theme-color"> */
+  --color-combo-700: #c2410c;
+  --color-combo-800: #9a3412;
+  --color-combo-900: #7c2d12;
+  --color-surface: #fafafa;
+  --color-surface-dark: #18181b;
+}
+
+/* Set on <body>, not a component root: most copy carries no colour class and
+   would inherit the browser's black, invisible on the dark surface, and
+   portalled UI mounts outside any layout wrapper. */
+body {
+  background-color: var(--color-surface);
+  color: #18181b;
+}
+.dark body {
+  background-color: var(--color-surface-dark);
+  color: #e4e4e7;
+}

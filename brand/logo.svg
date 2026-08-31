@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="PDF Combo">
+  <!-- Sibling of the Where Wes Went compass badge: same 32x32 rounded square,
+       same 0.22 corner radius, same white line-art glyph in a 24x24 box slanted
+       12 degrees. Only the glyph and the accent hue differ.
+       The accent-coloured halo around the front sheet is what keeps the two
+       sheets apart at 16px — without it the overlap fuses into one blob. -->
+  <rect width="32" height="32" rx="7.04" fill="#ea580c"/>
+  <g transform="translate(16 16) scale(1.04) rotate(12) translate(-12 -12)"
+     stroke-linejoin="round">
+    <rect x="9.5" y="2" width="9.5" height="14" rx="1.4"
+          fill="none" stroke="#ffffff" stroke-width="2.2"/>
+    <rect x="5" y="8" width="9.5" height="14" rx="1.4"
+          fill="#ffffff" stroke="#ea580c" stroke-width="2.6" paint-order="stroke"/>
+  </g>
+</svg>
